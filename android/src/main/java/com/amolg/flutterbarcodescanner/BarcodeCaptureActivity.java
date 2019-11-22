@@ -28,6 +28,7 @@ import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -84,7 +85,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
     private ImageView imgViewBarcodeCaptureUseFlash;
     private Button btnBarcodeCaptureCancel;
     private TextView tvCounter;
-    private int counter = 180;
+    private int counter = 10;
 
     public static int SCAN_MODE = SCAN_MODE_ENUM.QR.ordinal();
 
@@ -119,8 +120,28 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
             }
             imgViewBarcodeCaptureUseFlash = findViewById(R.id.imgViewBarcodeCaptureUseFlash);
             btnBarcodeCaptureCancel = findViewById(R.id.btnBarcodeCaptureCancel);
+
             tvCounter = findViewById(R.id.tvCounter);
-            tvCounter.setText(String.valueOf(counter));
+            final Handler h = new Handler();
+            h.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    // do stuff then
+                    // can call h again after work!
+                    counter--;
+                    tvCounter.setText(String.valueOf(counter));
+                    if (counter == 0) {
+                        Barcode barcode = new Barcode();
+                        barcode.rawValue = "-2";
+                        barcode.displayValue = "-2";
+                        FlutterBarcodeScannerPlugin.onBarcodeScanReceiver(barcode);
+                        finish();
+                    } else {
+                        h.postDelayed(this, 1000);
+                    }
+                }
+            }, 1000); // 1 second delay (takes millis)
+
             btnBarcodeCaptureCancel.setText(buttonText);
             btnBarcodeCaptureCancel.setOnClickListener(this);
             imgViewBarcodeCaptureUseFlash.setOnClickListener(this);
