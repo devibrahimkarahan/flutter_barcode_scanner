@@ -85,7 +85,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
     private ImageView imgViewBarcodeCaptureUseFlash;
     private Button btnBarcodeCaptureCancel;
     private TextView tvCounter;
-    private int counter = 10;
+    private int counter = 180;
 
     public static int SCAN_MODE = SCAN_MODE_ENUM.QR.ordinal();
 
